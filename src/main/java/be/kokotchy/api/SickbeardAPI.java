@@ -32,6 +32,7 @@ public class SickbeardAPI {
     private final String host;
 
     private final ApiShows apiShows;
+    private final ApiShow apiShow;
 
     /**
      * Create a new SickbeardAPI client with the given paremeter
@@ -51,6 +52,7 @@ public class SickbeardAPI {
         client = new HttpClient();
         client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
         apiShows = new ApiShows(this);
+        apiShow = new ApiShow(this);
     }
 
     public JSONObject execute(String cmd) {
@@ -61,7 +63,13 @@ public class SickbeardAPI {
             int status = client.executeMethod(method);
             if (status == HttpStatus.SC_OK) {
                 InputStream response = method.getResponseBodyAsStream();
-                return (JSONObject) JSONValue.parse(new InputStreamReader(response));
+                if (logger.isDebugEnabled()) {
+                    JSONObject jsonObject = (JSONObject) JSONValue.parse(new InputStreamReader(response));
+                    logger.debug(jsonObject.toJSONString());
+                    return jsonObject;
+                } else {
+                    return (JSONObject) JSONValue.parse(new InputStreamReader(response));
+                }
             } else {
                 logger.error("Method failed: "+method.getStatusLine());
             }
@@ -77,8 +85,17 @@ public class SickbeardAPI {
         return apiShows;
     }
 
+    public ApiShow getApiShow() {
+        return apiShow;
+    }
+
     public JSONObject execute(Map<String, String> params) {
-        return execute(createParamsString(params));
+        if (params.containsKey("cmd")) {
+            return execute(createParamsString(params));
+        } else {
+            logger.error("The cmd is mandatory");
+            return null;
+        }
     }
 
     public static String createParamsString(Map<String, String> params) {

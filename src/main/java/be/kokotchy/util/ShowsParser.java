@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static be.kokotchy.util.JsonUtil.getBoolean;
+import static be.kokotchy.util.JsonUtil.getLong;
+import static be.kokotchy.util.JsonUtil.getString;
+
 /**
  * Created with IntelliJ IDEA.
  * User: canas
@@ -120,41 +124,7 @@ public class ShowsParser {
         return nbByCat;
     }
 
-    private static long getLong(JSONObject jsonObject, String key) {
-        if (jsonObject.containsKey(key)) {
-            Object value = jsonObject.get(key);
-            if (value instanceof Long) {
-                return (Long) value;
-            } else {
-                return Long.parseLong(value.toString());
-            }
-        } else {
-            return -1;
-        }
-    }
 
-    private static String getString(JSONObject jsonObject, String key) {
-        if (jsonObject.containsKey(key)) {
-            return jsonObject.get(key).toString();
-        } else {
-            return null;
-        }
-    }
-
-    private static boolean getBoolean(JSONObject jsonObject, String key) {
-        if (jsonObject.containsKey(key)) {
-
-            Object value = jsonObject.get(key);
-            if (value instanceof Boolean) {
-                return Boolean.parseBoolean(value.toString());
-            } else {
-                long longValue = (Long) value;
-                return longValue == 1;
-            }
-        } else {
-            return false;
-        }
-    }
 
     public static ShowStats parseShowStats(InputStream response) {
         return parseShowStats((JSONObject) JSONValue.parse(new InputStreamReader(response)));
