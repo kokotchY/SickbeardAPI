@@ -37,7 +37,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>be.kokotchy.SickbeardAPI</mainClass>
+                    <mainClass>be.kokotchy.examples.AllWantedEpisodes</mainClass>
                 </configuration>
             </plugin>
         </plugins>
